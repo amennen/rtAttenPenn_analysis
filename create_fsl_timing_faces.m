@@ -1,6 +1,6 @@
 %% SPECIFY THESE THINGS FIRTST
-subjectId = 'RT020';
-subjectNum=3;
+subjectId = 'RT025';
+subjectNum=5;
 %subjectDay= 2; % PUT 1 OR 2 for FACES ---> day 1 or day 3 of scanning, but day 2 of the faces task
 %% MAKE SURE CORTRECT
 for subjectDay=1:2

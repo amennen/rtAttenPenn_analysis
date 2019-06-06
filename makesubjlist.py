@@ -25,7 +25,7 @@ file_name='participants.tsv'
 columns=['participant_id', 'age', 'sex', 'group']
 data=[]
 # script should just loop over all subjects possible
-allsubjects = np.array([1,2,3,101,102, 103, 104,105, 106])
+allsubjects = np.array([1,2,3,4,5,6,101,102, 103, 104,105, 106,107,108])
 nsub = len(allsubjects)
 
 for s in np.arange(nsub):

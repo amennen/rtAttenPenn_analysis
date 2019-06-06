@@ -13,7 +13,8 @@ fmriprep_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmri
 
 # then create empty tsv files
 #all_subjects = np.array([2,101,102,103,104,105])
-all_subjects = np.array([3])
+#all_subjects = np.array([4,107])
+all_subjects = np.array([5])
 # don't run on subject 1, day 1** accidentally deleted the TRs for the person so run with ntodelete=0 for days 1 ONLY**
 # to read in old file: OLD=pd.read_csv(full_save_path,sep='\t')
 nsub=len(all_subjects)

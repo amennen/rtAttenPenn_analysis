@@ -19,7 +19,7 @@ SES=ses-$(printf "%02d" $sessionNumber)
 runNumber=1
 RUN=run-$(printf "%02d" $runNumber)
 
-FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_MNI.feat 
+FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_T1w_final.feat 
 rm ${FEAT_DIR}/reg/*.mat
 cp $FSLDIR/etc/flirtsch/ident.mat ${FEAT_DIR}/reg/example_func2standard.mat 
 cp ${FEAT_DIR}/mean_func.nii.gz ${FEAT_DIR}/reg/standard.nii.gz
@@ -29,7 +29,7 @@ SES=ses-$(printf "%02d" $sessionNumber)
 runNumber=2
 RUN=run-$(printf "%02d" $runNumber)
 
-FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_MNI.feat 
+FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_T1w_final.feat 
 rm ${FEAT_DIR}/reg/*.mat
 cp $FSLDIR/etc/flirtsch/ident.mat ${FEAT_DIR}/reg/example_func2standard.mat 
 cp ${FEAT_DIR}/mean_func.nii.gz ${FEAT_DIR}/reg/standard.nii.gz
@@ -39,7 +39,7 @@ SES=ses-$(printf "%02d" $sessionNumber)
 runNumber=1
 RUN=run-$(printf "%02d" $runNumber)
 
-FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_MNI.feat 
+FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_T1w_final.feat 
 rm ${FEAT_DIR}/reg/*.mat
 cp $FSLDIR/etc/flirtsch/ident.mat ${FEAT_DIR}/reg/example_func2standard.mat 
 cp ${FEAT_DIR}/mean_func.nii.gz ${FEAT_DIR}/reg/standard.nii.gz
@@ -49,7 +49,7 @@ SES=ses-$(printf "%02d" $sessionNumber)
 runNumber=2
 RUN=run-$(printf "%02d" $runNumber)
 
-FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_MNI.feat 
+FEAT_DIR=$SUBJECT_DIR/${SES}/faces${runNumber}_T1w_final.feat 
 rm ${FEAT_DIR}/reg/*.mat
 cp $FSLDIR/etc/flirtsch/ident.mat ${FEAT_DIR}/reg/example_func2standard.mat 
 cp ${FEAT_DIR}/mean_func.nii.gz ${FEAT_DIR}/reg/standard.nii.gz

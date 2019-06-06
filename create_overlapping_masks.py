@@ -46,3 +46,4 @@ common = nilearn.masking.intersect_masks(all_masks_list, threshold=1, connected=
 common_base = mask.split('.')[0]
 full_common_path = COMMON_DIR + '/' + common_base + '_overlapping' + '.nii.gz'
 common.to_filename(full_common_path)
+

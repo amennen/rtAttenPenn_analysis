@@ -21,8 +21,8 @@ from subprocess import call
 fmriprep_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep"
 save_dir='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/confound_EVs'
 trunc_save_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/trunc'
-# subjects 106,3,107,4,108 got resting state
-subjectNum = 106
+# subjects 106,3,107,4,108,5 got resting state
+subjectNum = 5
 
 bids_id = 'sub-{0:03d}'.format(subjectNum)
 print(bids_id)
