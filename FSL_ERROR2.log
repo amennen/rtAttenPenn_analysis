@@ -1,0 +1,28 @@
+  File "/share/apps/fsl/5.0.9/bin/imglob", line 130
+    print filelist[file],
+                 ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print(filelist[file], end=" ")?
+  File "/share/apps/fsl/5.0.9/bin/imglob", line 130
+    print filelist[file],
+                 ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print(filelist[file], end=" ")?
+    while executing
+"exec sh -c "${FSLDIR}/bin/imglob $args" "
+    (procedure "imglob" line 7)
+    invoked from within
+"imglob $feat_files(1)/stats/cope*.* "
+    (procedure "feat5:updateselect" line 63)
+    invoked from within
+"feat5:updateselect $w"
+    (procedure "feat5:multiple_check" line 82)
+    invoked from within
+"feat5:multiple_check .r 0 1 1 d"
+    invoked from within
+".dialog1.cancel invoke"
+    ("uplevel" body line 1)
+    invoked from within
+"uplevel #0 [list $w invoke]"
+    (procedure "tk::ButtonUp" line 22)
+    invoked from within
+"tk::ButtonUp .dialog1.cancel"
+    (command bound to event)
