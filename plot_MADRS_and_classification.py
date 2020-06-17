@@ -29,7 +29,7 @@ matplotlib.rc('font', **font)
 # have python and matlab versions--let's start with matlab 
 
 
-subjects = np.array([1,2,101,102,103,105,105,106,3,107,4,108,5])
+subjects = np.array([1,2,101,102,103,105,105,106,3,107,4,108,5,6,109,7,110,8,9])
 HC_ind = np.argwhere(subjects<100)[:,0]
 MDD_ind = np.argwhere(subjects>100)[:,0]
 nsubs = len(subjects)
@@ -164,6 +164,7 @@ for s in np.arange(nsubs):
     snumber = subjects[s]
     sname = snames[s]
     subject_scores = MADRS_SCORES[sname]
+    # difference 0 is then V 5 - V1, difference 1 is V6 - V1, difference 2 is V7 - V1
     scores_differences[s,0] = subject_scores[1] - subject_scores[0]
     scores_differences[s,1] = subject_scores[2] - subject_scores[0]
     scores_differences[s,2] = subject_scores[3] - subject_scores[0]

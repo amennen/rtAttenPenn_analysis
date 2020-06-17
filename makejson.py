@@ -7,7 +7,7 @@ import pandas as pd
 import json
 import numpy as np
 
-bids_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti'
+bids_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti'
 
 description_fn = os.path.join(bids_dir, 'dataset_description.json')
 description = {u'Funding': [u'TODO'], 
@@ -142,7 +142,7 @@ with open(task_fn, 'w') as f:
 all_subjects = np.array([1,2])
 nsub=len(all_subjects)
 ndays=3
-nifti_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti"
+nifti_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti"
 for subjectNum in all_subjects:
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
 	for d in np.arange(ndays):

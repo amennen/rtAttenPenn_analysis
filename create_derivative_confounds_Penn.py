@@ -12,16 +12,15 @@
 
 import os
 import glob
-from shutil import copyfile
 import pandas as pd
 import json
 import numpy as np
 from subprocess import call
 import sys
 
-fmriprep_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep"
-save_dir='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/confound_EVs'
-trunc_save_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/trunc'
+fmriprep_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep"
+save_dir='/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/confound_EVs'
+trunc_save_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/trunc'
 # subjects 106,3,107,4,108 got resting state
 #subjectNum = 106
 # make subject number argument

@@ -8,11 +8,11 @@ def correctjsonfiles(subjectNum,make_func_tsv):
 	import json
 	import numpy as np
 
-	bids_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti'
+	bids_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti'
 
 	# then create empty tsv files
 	ndays=3
-	nifti_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti"
+	nifti_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti"
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
 	for d in np.arange(ndays):
 		subjectDay=d+1

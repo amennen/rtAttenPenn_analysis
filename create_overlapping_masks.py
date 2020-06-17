@@ -20,13 +20,13 @@ import scipy
 import nilearn.masking
 
 mask = sys.argv[1]
-PROJECT_DIR='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives'
-COMMON_DIR='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/mni_anat' # where to save
+PROJECT_DIR='/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives'
+COMMON_DIR='/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/mni_anat' # where to save
 #mask='LAMYG_in_MNI.nii.gz'
 #mask_wb = 'sub-108_ses-03_task-faces_rec-uncorrected_run-01_bold_space-MNI152NLin2009cAsym_brainmask.nii.gz' # for each subject/session
 
 
-subjects = np.array([1,2,3,4,5,101,102,103,104,105,106, 107,108])
+subjects = np.array([1,2,3,4,5,6,7,8,9,10,11,12,101,102,103,104,105,106, 107,108,109,110,111,112,113,114,115])
 nsubs = len(subjects)
 
 all_masks_list = []
@@ -35,11 +35,19 @@ for s in np.arange(nsubs):
     bids_id = 'sub-{0:03d}'.format(subjects[s])
     for ses in np.array([1,3]):
         ses_id = 'ses-{0:02d}'.format(ses)
-        subject_mask = PROJECT_DIR + '/' + 'fmriprep' + '/' + bids_id + '/' + ses_id + '/' + 'func' + '/' + mask
+        if mask == 'whole_brain':
+            subject_mask = PROJECT_DIR + '/' + 'fmriprep' + '/' + bids_id + '/' + ses_id + '/' + 'func' + '/' + bids_id + '_' + ses_id + '_task-faces_rec-uncorrected_run-01_bold_space-MNI152NLin2009cAsym_brainmask.nii.gz'
+        else:
+            subject_mask = PROJECT_DIR + '/' + 'fmriprep' + '/' + bids_id + '/' + ses_id + '/' + 'func' + '/' + mask
         all_masks_list.append(subject_mask)
 
-
-common = nilearn.masking.intersect_masks(all_masks_list, threshold=1, connected=True)
+if mask == 'dlPFC_in_MNI.nii.gz':
+    threshold = 0.5
+elif mask == 'LAMYG_in_MNI.nii.gz':
+    threshold = 1 # to keep everything
+elif mask == 'whole_brain':
+    threshold = 1 # to not keep everything
+common = nilearn.masking.intersect_masks(all_masks_list, threshold=threshold, connected=False)
 
 # 26 voxels total
 # now save

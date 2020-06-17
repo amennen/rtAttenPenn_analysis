@@ -3,7 +3,7 @@
 # Run using something like:
 # ./run_fmriprep.sh |& tee ../derivatives/logs/run_fmriprep.txt 
 
-bids_dir=/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti
+bids_dir=/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti
 
 singularity run --cleanenv \
     --home $bids_dir:/home \

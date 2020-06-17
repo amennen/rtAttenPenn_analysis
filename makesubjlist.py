@@ -20,18 +20,18 @@ import pandas as pd
 import numpy as np
 import glob
 
-bids_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti'
+bids_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti'
 file_name='participants.tsv'
 columns=['participant_id', 'age', 'sex', 'group']
 data=[]
 # script should just loop over all subjects possible
-allsubjects = np.array([1,2,3,4,5,6,101,102, 103, 104,105, 106,107,108])
+allsubjects = np.array([1,2,3,4,5,6,7,8,9,10,11,12,101,102, 103, 104,105, 106,107,108,109,110,111,112,113,114,115])
 nsub = len(allsubjects)
 
 for s in np.arange(nsub):
 	subjectNum=allsubjects[s]
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
-	dicom_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Dicom"
+	dicom_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Dicom"
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
 	ses_id = 'ses-{0:02d}'.format(1)
 	day_path=os.path.join(dicom_out,bids_id,ses_id)
@@ -42,7 +42,9 @@ for s in np.arange(nsub):
 	
 
 	# go to an example file name for that person
-	dicomfile= day_path + '/func' + '/task-faces_rec-uncorrected_run-01_bold' + '/001_*_000001.dcm'
+	# changed this on 10/3 because syncing the dicoms over from jag must have failed so now it's just reading any dicoms
+	dicomfile= day_path + '/func' + '/task-faces_rec-uncorrected_run-01_bold' + '/001_*.dcm'
+	print(dicomfile)
 	fn = glob.glob(dicomfile)[0]
 	d = pydicom.read_file(fn)
 	subjectAge = int(d.PatientAge[0:-1])

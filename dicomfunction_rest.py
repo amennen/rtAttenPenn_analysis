@@ -17,9 +17,8 @@ def transferdicoms(subject,day):
 	import shutil
 	import sys
 
-	exp_dir = "/data/jag/cnds/amennen/rtAttenPenn/fmridata/behavdata/gonogo/"
+	exp_dir = "/data/jux/cnds/amennen/rtAttenPenn/fmridata/behavdata/gonogo/"
 	exp = exp_dir + 'subject' + str(subject) + '/usedscripts/PennCfg_Day' + str(day) + '.toml'
-	#exp="/data/jag/cnds/amennen/rtAttenPenn/fmridata/behavdata/gonogo/subject1/usedscripts/PennCfg_day1.toml"
 	cfg=loadConfigFile(exp)
 	# add check here that subject name matches!! ###
 	subjectName=cfg.session.subjectName
@@ -38,7 +37,7 @@ def transferdicoms(subject,day):
 	elif subjectDay==3:
 		allRuns=np.array(cfg.session.Runs3)
 		allScans=np.array(cfg.session.ScanNums3)
-	dicom_dir="/data/jag/cnds/amennen/rtAttenPenn/fmridata/transferredImages"
+	dicom_dir="/data/jux/cnds/amennen/rtAttenPenn/fmridata/transferredImages"
 	dt = datetime.datetime.strptime(cfg.session.subjectName[0:6], "%m%d%y")
 	dicom_folder=dicom_dir + "/" +  datetime.datetime.strftime(dt,"%Y%m%d") + "." + subjectName + "." + subjectName
 	print('loading from %s' % dicom_folder)
@@ -112,7 +111,7 @@ def transferdicoms(subject,day):
 	############################################################################################
 
 	# now we can iterate over the whole folder and copy the dicom files over into new directory
-	dicom_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Dicom"
+	dicom_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Dicom"
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
 	ses_id = 'ses-{0:02d}'.format(subjectDay)
 	day_path=os.path.join(dicom_out,bids_id,ses_id)

@@ -9,14 +9,16 @@
 set -e
 
 make_amygdala=1
-make_mfg=1
+make_mfg=0
+make_dlpfc=1
 register_new_subject=1
 
 
-PROJECT_DIR=/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives
+PROJECT_DIR=/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives
 
-#for subjectNumber in "1" "2" "3" "4" "101" "102" "103" "104" "105" "106" "107" "108" ; do
-for subjectNumber in "5" ; do
+#for subjectNumber in "1" "2" "3" "4" "5" "7" "101" "102" "103" "104" "105" "106" "107" "108" "109" ; do
+for subjectNumber in  "12" ; do
+#for subjectNumber in "112" ; do
 SUBJECT=sub-$(printf "%03d" $subjectNumber)
 echo $SUBJECT
 FREESURFER_DIR=$PROJECT_DIR/freesurfer/$SUBJECT/mri
@@ -70,6 +72,23 @@ then
 	# at first didn't binarize but didn't matter because they weren't overlapping at all but this is for the future
 	fslmaths $BOLD_DIR/LMFG.nii.gz -add $BOLD_DIR/RMFG.nii.gz -bin $BOLD_DIR/MFG.nii.gz
 fi
+
+if [ $make_dlpfc -eq 1 ]
+then
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 11115 -uthr 11115 -bin $BOLD_DIR/LMFG.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz  -thr 12115 -uthr 12115 -bin $BOLD_DIR/RMFG.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 11116 -uthr 11116 -bin $BOLD_DIR/LSFG.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 12116 -uthr 12116 -bin $BOLD_DIR/RSFG.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 11153 -uthr 11153 -bin $BOLD_DIR/LIFS.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 12153 -uthr 12153 -bin $BOLD_DIR/RIFS.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 11154 -uthr 11154 -bin $BOLD_DIR/LMFS.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 12154 -uthr 12154 -bin $BOLD_DIR/RMFS.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 11155 -uthr 11155 -bin $BOLD_DIR/LSFS.nii.gz
+        fslmaths $BOLD_DIR/aparc.a2009+aseg-in-BOLD.nii.gz -thr 12155 -uthr 12155 -bin $BOLD_DIR/RSFS.nii.gz
+        # at first didn't binarize but didn't matter because they weren't overlapping at all but this is for the future
+        fslmaths $BOLD_DIR/LMFG.nii.gz -add $BOLD_DIR/RMFG.nii.gz -add $BOLD_DIR/LSFG.nii.gz -add $BOLD_DIR/RSFG.nii.gz -add $BOLD_DIR/LIFS.nii.gz -add $BOLD_DIR/RIFS.nii.gz -add $BOLD_DIR/LMFS.nii.gz -add $BOLD_DIR/RMFS.nii.gz -add $BOLD_DIR/LSFS.nii.gz -add $BOLD_DIR/RSFS.nii.gz -bin $BOLD_DIR/dlPFC.nii.gz
+fi
+
 
 done
 

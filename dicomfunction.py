@@ -18,9 +18,8 @@ def transferdicoms(subject,day):
 	import shutil
 	import sys
 
-	exp_dir = "/data/jag/cnds/amennen/rtAttenPenn/fmridata/behavdata/gonogo/"
+	exp_dir = "/data/jux/cnds/amennen/rtAttenPenn/fmridata/behavdata/gonogo/"
 	exp = exp_dir + 'subject' + str(subject) + '/usedscripts/PennCfg_day' + str(day) + '.toml'
-	#exp="/data/jag/cnds/amennen/rtAttenPenn/fmridata/behavdata/gonogo/subject1/usedscripts/PennCfg_day1.toml"
 	cfg=loadConfigFile(exp)
 	# add check here that subject name matches!! ###
 	subjectName=cfg.session.subjectName
@@ -32,7 +31,7 @@ def transferdicoms(subject,day):
 		print('ERROR WITH DAY NUMBER')
 	allRuns=np.array(cfg.session.Runs)
 	allScans=np.array(cfg.session.ScanNums)
-	dicom_dir="/data/jag/cnds/amennen/rtAttenPenn/fmridata/transferredImages"
+	dicom_dir="/data/jux/cnds/amennen/rtAttenPenn/fmridata/transferredImages"
 	dt = datetime.datetime.strptime(cfg.session.date,"%m/%d/%Y")
 	dicom_folder=dicom_dir + "/" +  datetime.datetime.strftime(dt,"%Y%m%d") + "." + subjectName + "." + subjectName
 	# we know what the numbers were for the functional runs onwards
@@ -100,7 +99,7 @@ def transferdicoms(subject,day):
 	############################################################################################
 
 	# now we can iterate over the whole folder and copy the dicom files over into new directory
-	dicom_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Dicom"
+	dicom_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Dicom"
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
 	ses_id = 'ses-{0:02d}'.format(subjectDay)
 	day_path=os.path.join(dicom_out,bids_id,ses_id)

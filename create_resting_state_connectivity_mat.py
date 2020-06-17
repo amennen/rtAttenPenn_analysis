@@ -77,9 +77,76 @@ from nilearn.image import new_img_like
 import scipy.stats as sstats  # type: ignore
 from nilearn.input_data import NiftiLabelsMasker
 from nilearn.connectome import ConnectivityMeasure
+from statsmodels.formula.api import ols
+import statsmodels.api as sm
+import statsmodels
+from statsmodels.stats.anova import AnovaRM
+
 
 powerAtlas = '/data/jag/cnds/amennen/Power/power264MNI_resampled.nii.gz'
-noise_save_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/clean'
+noise_save_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/clean'
+def calculateWithinConnectivity(networkName,correlation_matrix,fullDF,systemDF,all_good_ROI):
+	# find DMN labels
+	this_ROI = fullDF.ROI[systemDF==networkName].values.astype(int) 
+	# now convert this to the indices
+	this_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,this_ROI))[0]
+	if networkName == 'Sensory/somatomotor Hand':
+		# concatenate other one
+		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
+		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
+		this_ROI_indices_in_matrix = np.concatenate((this_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
+	x,y = np.meshgrid(this_ROI_indices_in_matrix,this_ROI_indices_in_matrix)
+	# need to figure this out!!!
+	this_ROI_correlations = correlation_matrix[x,y]
+	n_nodes = len(this_ROI)
+	#### CHECK WITH MEICHEN WITH IF THIS IS THE MEAN FIRST OR JUST SUMMING ###
+	within_ROI_sum = np.nansum(this_ROI_correlations)/2 # dividing by 2 because will be double the off-diagonal values
+	within_ROI_mean = within_ROI_sum/np.square(n_nodes)
+	#within_ROI_mean = np.nanmean(this_ROI_correlations)/np.square(n_nodes)
+	return within_ROI_mean
+
+# for one versus all
+def calculateOneVsAllConnectivity(networkName,correlation_matrix,fullDF,systemDF,all_good_ROI):
+	this_ROI = fullDF.ROI[systemDF==networkName].values.astype(int) 
+	this_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,this_ROI))[0]
+	if networkName == 'Sensory/somatomotor Hand':
+		# concatenate other one
+		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
+		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
+		this_ROI_indices_in_matrix = np.concatenate((this_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
+	all_other_indices_in_matrix = [x for x in np.arange(len(all_good_ROI)) if x not in this_ROI_indices_in_matrix]
+	x,y = np.meshgrid(this_ROI_indices_in_matrix,all_other_indices_in_matrix)
+	# this time we're not dividing by 2 because all x values are ROI 1 and all y values are ROI 2
+	across_ROI_correlations = correlation_matrix[x,y]
+	n_nodes_this_network = len(this_ROI)
+	n_nodes_all_others = len(all_other_indices_in_matrix)
+	across_ROI_sum = np.nansum(across_ROI_correlations)
+	across_ROI_mean = across_ROI_sum/(n_nodes_this_network*n_nodes_all_others)
+	return across_ROI_mean
+
+def calculatePairwiseConnectivity(networkA,networkB,correlation_matrix,fullDF,systemDF,all_good_ROI):
+	A_ROI = fullDF.ROI[systemDF==networkA].values.astype(int) 
+	A_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,A_ROI))[0]
+	if networkA == 'Sensory/somatomotor Hand':
+		# concatenate other one
+		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
+		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
+		A_ROI_indices_in_matrix = np.concatenate((A_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
+	B_ROI = fullDF.ROI[systemDF==networkB].values.astype(int) 
+	B_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,B_ROI))[0]
+	if networkB == 'Sensory/somatomotor Hand':
+		# concatenate other one
+		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
+		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
+		B_ROI_indices_in_matrix = np.concatenate((B_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
+	x,y = np.meshgrid(A_ROI_indices_in_matrix,B_ROI_indices_in_matrix)
+	# not dividing by 2 again because again ROI 1 is x and ROI 2 is y so we're not double counting anything
+	across_ROI_correlations = correlation_matrix[x,y]
+	n_nodes_A = len(A_ROI)
+	n_nodes_B = len(B_ROI)
+	across_ROI_sum = np.nansum(across_ROI_correlations)
+	across_ROI_mean = across_ROI_sum/(n_nodes_A*n_nodes_B)
+	return across_ROI_mean
 
 # put in check wher eif the std of any voxels in ROI = 0, then skip that vox
 nROI = 264
@@ -109,7 +176,7 @@ all_good_labels = [x for x in all_network_ind if x not in all_bad_labels]
 all_good_ROI = np.array(all_good_labels) + 1 # puts as ROI labels so we can find the specific regions we want
 nROI_good = len(all_good_labels)
 
-subjects = np.array([3,4,5,106,107,108])
+subjects = np.array([3,4,5,6,7,8,9,10,11,106,107,108,109,110,111,112,113])
 nSub = len(subjects)
 HC_ind = np.argwhere(subjects<100)[:,0]
 MDD_ind = np.argwhere(subjects>100)[:,0]
@@ -260,8 +327,9 @@ plt.show()
 
 
 # last thing: for given row,col in matrix, plot bargraph of differences by day
-row=0
-row = 0
+
+system = 0
+row=system
 col=row
 linestyles = ['-', ':']
 colors=['k', 'r']
@@ -278,80 +346,62 @@ for s in np.arange(nSub):
 		plt.plot(np.arange(nVisits),average_within_mat[row,col,s,:], marker='.',ms=20,color=colors[style],alpha=0.5)
 plt.errorbar(np.arange(nVisits),np.nanmean(average_within_mat[row,col,HC_ind,:],axis=0),lw = 5,color=colors[0],yerr=scipy.stats.sem(average_within_mat[row,col,HC_ind,:],axis=0,nan_policy='omit'), label='HC')
 plt.errorbar(np.arange(nVisits),np.nanmean(average_within_mat[row,col,MDD_ind,:],axis=0),lw = 5,color=colors[1],yerr=scipy.stats.sem(average_within_mat[row,col,MDD_ind,:],axis=0,nan_policy='omit'), label='MDD')
-plt.xticks(np.arange(nVisits),('Day 1', 'Day 3'))
+plt.xticks(np.arange(nVisits),('Pre NF', 'Post NF'))
 plt.xlabel('Visit')
 plt.title('Row %i Col %i' % (row,col))
-plt.title('Correlation')
+plt.title('%s Within-Network Connectivity'% systems_to_keep_abbrv[system])
 plt.legend()
 plt.show()
-
+# now test significance
+print('FIRST DAY')
+print(scipy.stats.ttest_ind(average_within_mat[row,col,HC_ind,0],average_within_mat[row,col,MDD_ind,0]))
+print('LAST DAY')
+print(scipy.stats.ttest_ind(average_within_mat[row,col,HC_ind,1],average_within_mat[row,col,MDD_ind,1]))
 
 # now get the specific ROI values for each network that you want to compute
 # IMPORTANT: MAKE ANY CORRELATION MATRIX HAVE NAN DIAGNOALS BEFORE YOU PASS INTO FUNCTION!!
-def calculateWithinConnectivity(networkName,correlation_matrix,fullDF,systemDF,all_good_ROI):
-	# find DMN labels
-	this_ROI = fullDF.ROI[systemDF==networkName].values.astype(int) 
-	# now convert this to the indices
-	this_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,this_ROI))[0]
-	if networkName == 'Sensory/somatomotor Hand':
-		# concatenate other one
-		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
-		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
-		this_ROI_indices_in_matrix = np.concatenate((this_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
-	x,y = np.meshgrid(this_ROI_indices_in_matrix,this_ROI_indices_in_matrix)
-	# need to figure this out!!!
-	this_ROI_correlations = correlation_matrix[x,y]
-	n_nodes = len(this_ROI)
-	#### CHECK WITH MEICHEN WITH IF THIS IS THE MEAN FIRST OR JUST SUMMING ###
-	within_ROI_sum = np.nansum(this_ROI_correlations)/2 # dividing by 2 because will be double the off-diagonal values
-	within_ROI_mean = within_ROI_sum/np.square(n_nodes)
-	#within_ROI_mean = np.nanmean(this_ROI_correlations)/np.square(n_nodes)
-	return within_ROI_mean
 
-# for one versus all
-def calculateOneVsAllConnectivity(networkName,correlation_matrix,fullDF,systemDF,all_good_ROI):
-	this_ROI = fullDF.ROI[systemDF==networkName].values.astype(int) 
-	this_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,this_ROI))[0]
-	if networkName == 'Sensory/somatomotor Hand':
-		# concatenate other one
-		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
-		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
-		this_ROI_indices_in_matrix = np.concatenate((this_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
-	all_other_indices_in_matrix = [x for x in np.arange(len(all_good_ROI)) if x not in this_ROI_indices_in_matrix]
-	x,y = np.meshgrid(this_ROI_indices_in_matrix,all_other_indices_in_matrix)
-	# this time we're not dividing by 2 because all x values are ROI 1 and all y values are ROI 2
-	across_ROI_correlations = correlation_matrix[x,y]
-	n_nodes_this_network = len(this_ROI)
-	n_nodes_all_others = len(all_other_indices_in_matrix)
-	across_ROI_sum = np.nansum(across_ROI_correlations)
-	across_ROI_mean = across_ROI_sum/(n_nodes_this_network*n_nodes_all_others)
-	return across_ROI_mean
+#### FOR POSTER: look at just DMN first
+DMN_connectivity = average_within_mat[0,0,:,:].flatten() # nsubs x ndays --> flattens to s1 day 1 s1 day 2 s2 day 1 s2 day 2
+FPN_connectivity =  average_within_mat[1,1,:,:].flatten()
+DAN_connectivity =  average_within_mat[7,7,:,:].flatten()
+CON_connectivity =  average_within_mat[4,4,:,:].flatten()
+SAN_connectivity =  average_within_mat[5,5,:,:].flatten()
 
-def calculatePairwiseConnectivity(networkA,networkB,correlation_matrix,fullDF,systemDF,all_good_ROI):
-	A_ROI = fullDF.ROI[systemDF==networkA].values.astype(int) 
-	A_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,A_ROI))[0]
-	if networkA == 'Sensory/somatomotor Hand':
-		# concatenate other one
-		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
-		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
-		A_ROI_indices_in_matrix = np.concatenate((A_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
-	B_ROI = fullDF.ROI[systemDF==networkB].values.astype(int) 
-	B_ROI_indices_in_matrix = np.where(np.in1d(all_good_ROI,B_ROI))[0]
-	if networkB == 'Sensory/somatomotor Hand':
-		# concatenate other one
-		other_SMN = fullDF.ROI[systemDF=='Sensory/somatomotor Mouth'].values.astype(int) 
-		other_SMN_indices_in_matrix = np.where(np.in1d(all_good_ROI,other_SMN))[0]
-		B_ROI_indices_in_matrix = np.concatenate((B_ROI_indices_in_matrix,other_SMN_indices_in_matrix))
-	x,y = np.meshgrid(A_ROI_indices_in_matrix,B_ROI_indices_in_matrix)
-	# not dividing by 2 again because again ROI 1 is x and ROI 2 is y so we're not double counting anything
-	across_ROI_correlations = correlation_matrix[x,y]
-	n_nodes_A = len(A_ROI)
-	n_nodes_B = len(B_ROI)
-	across_ROI_sum = np.nansum(across_ROI_correlations)
-	across_ROI_mean = across_ROI_sum/(n_nodes_A*n_nodes_B)
-	return across_ROI_mean
+ndays=2
+day = np.tile(np.arange(ndays),nSub)
+subject = np.repeat(subjects,ndays)
+groups = ['HC' if i in HC_ind else 'MDD' for i in np.arange(nSub)]
+groups = np.repeat(groups,ndays)
+DATA = {}
+DATA['DMN_connectivity'] = DMN_connectivity
+DATA['FPN_connectivity'] = FPN_connectivity
+DATA['DAN_connectivity'] = DAN_connectivity
+DATA['CON_connectivity'] = CON_connectivity
+DATA['SAN_connectivity'] = SAN_connectivity
 
+DATA['day'] = day
+DATA['subject'] = subject
+DATA['groups'] = groups
+df = pd.DataFrame.from_dict(DATA)
+plt.figure()
+sns.barplot(data=df,x='day',y='DMN_connectivity',hue='groups',ci=68,palette=['k','r'],alpha=0.5)
+plt.title('DMN connectivity changes')
+plt.ylabel('DMN Within Connectivity')
+plt.show()
+scipy.stats.ttest_ind(average_within_mat[0,0,HC_ind,0],average_within_mat[0,0,MDD_ind,0]) # for 1-sided t-test the p-values would be 0.17
+model = ols('DMN_connectivity ~ groups*day',data=df).fit()
+model.summary()
 
+plt.figure()
+sns.barplot(data=df,x='day',y='FPN_connectivity',hue='groups',ci=68,palette=['k','r'],alpha=0.5)
+plt.title('FPN connectivity changes')
+plt.ylabel('FPN Within Connectivity')
+plt.show()
+
+plt.figure()
+sns.barplot(data=df,x='day',y='SAN_connectivity',hue='groups',ci=68,palette=['k','r'],alpha=0.5)
+plt.show()
 # Plot the correlation matrix
 # Make a large figure
 # Mask the main diagonal for visualization:
@@ -371,3 +421,4 @@ def calculatePairwiseConnectivity(networkA,networkB,correlation_matrix,fullDF,sy
 
 
 # figure out simplest way to do this
+

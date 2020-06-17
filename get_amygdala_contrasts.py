@@ -54,8 +54,8 @@ import pandas as pd
 
 
 
-FMRIPREP_DIR='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep/'
-FSL_DIR='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fsl/first_level/'
+FMRIPREP_DIR='/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep/'
+FSL_DIR='/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fsl/first_level/'
 mask = 'AMYG.nii.gz'
 Lmask = 'LAMYG.nii.gz'
 Rmask = 'RAMYG.nii.gz'

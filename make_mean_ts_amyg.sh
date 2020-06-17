@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PROJECT_DIR=/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives
-COMMON_AMYG=/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/mni_anat/LAMYG_in_MNI_overlapping.nii.gz # where to save
+PROJECT_DIR=/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives
+COMMON_AMYG=/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/mni_anat/LAMYG_in_MNI_overlapping.nii.gz # where to save
 for subjectNumber in "1" "2" "3" "4" "5" "101" "102" "103" "104" "105" "106" "107" "108" ; do
 SUBJECT=sub-$(printf "%03d" $subjectNumber)
 

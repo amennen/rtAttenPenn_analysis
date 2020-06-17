@@ -1,1 +1,5 @@
 *.nii.gz
+core*
+*.log
+*err
+nilearn_cache

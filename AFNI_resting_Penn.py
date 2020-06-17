@@ -8,10 +8,10 @@ import json
 import numpy as np
 from subprocess import call
 import sys
-fmriprep_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep"
-reg_save_dir='/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/confound_EVs'
-trunc_save_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/trunc'
-noise_save_dir = '/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/clean'
+fmriprep_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/fmriprep"
+reg_save_dir='/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/confound_EVs'
+trunc_save_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/trunc'
+noise_save_dir = '/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives/resting/clean'
 # subjects 106,3,107,4,108 got resting state
 #subjectNum = 106
 subjectNum = np.int(sys.argv[1])

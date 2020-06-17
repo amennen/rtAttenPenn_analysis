@@ -11,12 +11,12 @@ def makeniftis(subjectNum,subjectDay):
 
 
 	print('making nifti files for subject %i, day %i' % (subjectNum,subjectDay))
-	dicom_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Dicom"
+	dicom_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Dicom"
 	bids_id = 'sub-{0:03d}'.format(subjectNum)
 	ses_id = 'ses-{0:02d}'.format(subjectDay)
 	dicom_day_path=os.path.join(dicom_out,bids_id,ses_id)
 
-	nifti_out="/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti"
+	nifti_out="/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti"
 	nifti_day_path=os.path.join(nifti_out,bids_id,ses_id)
 
 	# check if there are anat files

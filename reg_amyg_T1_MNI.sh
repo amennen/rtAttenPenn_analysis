@@ -7,10 +7,11 @@
 # FOR EACH SUBJECT/SESSION, CONVERT AMYGDALA MASK INTO MNI SPACE W/ NN INTERPOLATION
 # MAKE OVERLAP OF ALL SUBJECTS
 
-PROJECT_DIR=/data/jag/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives
+PROJECT_DIR=/data/jux/cnds/amennen/rtAttenPenn/fmridata/Nifti/derivatives
 
 # first transform all amygdala files into MNI space
-for subjectNumber in "1" "2" "3" "4" "5" "101" "102" "103" "104" "105" "106" "107" "108" ; do
+#for subjectNumber in "1" "2" "3" "4" "5" "101" "102" "103" "104" "105" "106" "107" "108" ; do
+for subjectNumber in "12" ; do
 SUBJECT=sub-$(printf "%03d" $subjectNumber)
 transform=$PROJECT_DIR/fmriprep/${SUBJECT}/ses-01/anat/${SUBJECT}_ses-01_T1w_target-MNI152NLin2009cAsym_warp.h5
 
@@ -27,7 +28,7 @@ BOLD_DIR=$PROJECT_DIR/fmriprep/${SUBJECT}/${SES}/func
 antsApplyTransforms \
 -v 0 \
 -i $BOLD_DIR/LAMYG.nii.gz \
--r /data/jag/cnds/amennen/rtAttenPenn/MNI_things/mni_icbm152_t1_tal_nlin_asym_09c_BOLD_brain_Penn.nii.gz \
+-r /data/jux/cnds/amennen/rtAttenPenn/MNI_things/mni_icbm152_t1_tal_nlin_asym_09c_BOLD_brain_Penn.nii.gz \
 -t [$transform,0] \
 -n NearestNeighbor \
 -o $BOLD_DIR/LAMYG_in_MNI.nii.gz \
