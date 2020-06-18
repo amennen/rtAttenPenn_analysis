@@ -28,7 +28,7 @@ printf -v subj "%03d" $subject
 
 ROI=perception
 
-cd /data/jux/cnds/amennen/brainiak/rtAttenPenn_cloud
+cd /data/jux/cnds/amennen/penn_plotting_backup
 conda activate rtAtten
 echo "starting script"
 python anne_additions/train_test_python_classifier_newROIs.py $subject $ROI

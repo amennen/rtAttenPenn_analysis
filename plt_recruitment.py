@@ -1,7 +1,6 @@
 # plot recruitment numbers for penn
 # shown are the number of people who consented to the study (not who qualified/continued the study)
 
-# PURPOSE: mask, druncate, compare bold activity
 import os
 import glob
 from shutil import copyfile
@@ -71,8 +70,6 @@ import seaborn as sns
 import pandas as pd
 import csv
 from scipy import stats
-import brainiak
-import brainiak.funcalign.srm
 import sys
 from sklearn.utils import shuffle
 import random
